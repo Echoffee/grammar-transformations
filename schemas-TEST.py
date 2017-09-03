@@ -66,4 +66,30 @@ def gtest5():
 	print("...")
 	printGramTree(g)
 
-gtest5()
+######################################################
+# Fold grammar (same example as in trees-TEST (6))
+def gtest6():
+	g = gramTree([["f", 2], ["g", 2]], [
+	["X", 2, "v1, v2", "f(v2, f(v1, v1))"],
+	["Y", 3, "u, v, b", "f(f(v, f(u, u)), b)"]
+	])
+	g.generateTree()
+	printTree(g.getTrees()[0])
+	printTree(g.getTrees()[1])
+	g.GT_FoldFirstFound()
+	print("After folding...")
+	printTree(g.getTrees()[1])
+	
+
+######################################################
+# Generate random grammar + unfold + (re)fold
+def gtest7():
+	g = gramTree([["h", 1], ["g", 2], ["f", 2]], [])
+	g.randomizeRules(3)
+	g.generateTree()
+	t = g.GT_UnfoldRandom()
+	printTree(t)
+	g.GT_FoldFirstFound()
+	printTree(t)
+	
+gtest7()

@@ -62,12 +62,6 @@ class node:
 			for b in range(len(self.C)):
 				self.C[b].paths(s, P, final, b + 1)
 
-def findPattern(tree, pattern):
-	# Find the first subtree (top-left) in a given tree, returns first node position if found or null if not
-	# Top node of the subtree will be returned, and all the marked nodes connected to it are a part of the subtree
-	# result = [bool, node]
-	result = r_findPattern(tree, pattern, [False, None])
-	return result[1]
 
 def getLeafs(tree):
 	# Returns a list of the given tree's leafs (node without childs)
@@ -82,6 +76,13 @@ def r_getLeafs(tree, result):
 	else:
 		for n in tree.getChilds():
 			r_getLeafs(n, result)
+			
+def findPattern(tree, pattern):
+	# Find the first subtree (top-left) in a given tree, returns first node position if found or null if not
+	# Top node of the subtree will be returned, and all the marked nodes connected to it are a part of the subtree
+	# result = [bool, node]
+	result = r_findPattern(tree, pattern, [False, None])
+	return result[1]
 	
 # def findPatterns(tree, pattern):
 # 	# Find all of the subtrees in a given tree
@@ -136,6 +137,82 @@ def r_findPattern(tree, pattern, result):
 				b = [b[0] or v[0], (b[1] if v[1] == None else v[1])]
 				
 			return b
+
+def findPatternWithParams(tree, pattern):
+	# Find the first subtree (top-left) in a given tree using parameters (v1, v2, ...), returns first node position if found or null if not
+	# Top node of the subtree will be returned, and all the marked nodes connected to it are a part of the subtree, parameters exclued
+	# result = [bool, node, [param1, param2, ...]]
+	params = []
+	for p in pattern.getObject()[3]:
+		params = params + [[p, None]]
+		
+	result = r_findPatternWithParams(tree, pattern.getChilds()[0], [False, None], params, pattern.getChilds()[0])
+	return [result[1], params]
+	
+
+def r_findPatternWithParams(tree, pattern, result, params, origin):
+	# Recursive call for findPatternWithParams()
+	if pattern.getObject()[0] == "P":
+		p = next(filter(lambda x : x[0] == pattern.getObject()[1], params))
+		if p[1] == None:
+			p[1] = tree
+			return [True, tree]
+		else:
+				return [r_compareTree(tree, p[1]), tree]
+				
+	elif tree.getObject()[1] == pattern.getObject()[1]:
+		if len(pattern.getChilds()) == 0 and len(tree.getChilds()) == 0:
+			tree.mark(True)
+			return [True, tree]
+		else :
+			b = [True, tree]
+			if (len(pattern.getChilds()) > 0) and len(pattern.getChilds()) == len(tree.getChilds()):
+				for i in range(len(tree.getChilds())):
+					nb = r_findPatternWithParams(tree.getChilds()[i], pattern.getChilds()[i], [True, tree], params, origin)
+					b = [b[0] and nb[0], tree]
+				
+			if b[0] :
+				tree.mark(True)
+				return b
+			else :
+				b = [False, None]
+				for i in range(len(tree.getChilds())):
+					v = r_findPatternWithParams(tree.getChilds()[i], pattern, [False, None], params, origin)
+					b = [b[0] and v[0], (b[1] if v[1] == None else v[1])]
+					
+				return b
+	else :
+		if result[0] :
+			if origin != pattern:
+				for ppp in params:
+					ppp[1] = None
+					
+				return [False, None]
+			else:
+				return [False, None]
+		else:
+			b = [False, None]
+			for i in range(len(tree.getChilds())):
+				v = r_findPatternWithParams(tree.getChilds()[i], pattern, [False, None], params, origin)
+				b = [b[0] or v[0], (b[1] if v[1] == None else v[1])]
+				
+			return b
+
+def r_compareTree(t1, t2):
+	# Compares 2 trees, returns True if t1 = t2 (labels)
+	if t1.getObject()[1] == t2.getObject()[1]:
+		if len(t1.getChilds()) == 0 and len(t2.getChilds()) == 0:
+			return True
+		elif len(t1.getChilds()) == len(t2.getChilds()) :
+			b = True
+			for i in range(len(t1.getChilds())):
+				b = b and r_compareTree(t1.getChilds()[i], t2.getChilds()[i])
+			
+			return b
+		else:
+			return False
+	else:
+		return False
 
 def replaceInTree(startingNode, newPatterns, args = []):
 	if (args == []):

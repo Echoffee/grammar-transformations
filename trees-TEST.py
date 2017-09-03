@@ -115,4 +115,66 @@ def test5():
 	print(sn)
 	printTree(t1)
 	
-test5()
+
+#############################################################
+# Trees :
+# X =       X
+#         /  
+#        f   
+#      /  \
+#    v2    f
+#         / \
+#        v1  v1
+# 
+# Y =       Y
+#         /  \ 
+#        f    b
+#      /  \
+#     v   f
+#		 / \
+#       u   u
+
+obj_xroot = ["NT", "X", 2, ["v1", "v2"]]
+obj_yroot = ["NT", "Y", 0, []]
+obj_f = ["S", "f", 2, []]
+obj_u = ["S", "u", 0, []]
+obj_v = ["S", "v", 0, []]
+obj_b = ["S", "b", 0, []]
+obj_v1 = ["P", "v1", 0, []]
+obj_v2 = ["P", "v2", 0, []]
+xroot = node(None)
+xroot.setObject(obj_xroot)
+xl = node(xroot)
+xl.setObject(obj_f)
+xll = node(xl)
+xll.setObject(obj_v2)
+xlr = node(xl)
+xlr.setObject(obj_f)
+xlrl = node(xlr)
+xlrl.setObject(obj_v1)
+xlrr = node(xlr)
+xlrr.setObject(obj_v1)
+
+yroot = node(None)
+yroot.setObject(obj_yroot)
+yl = node(yroot)
+yl.setObject(obj_f)
+yll = node(yl)
+yll.setObject(obj_v)
+ylr = node(yl)
+ylr.setObject(obj_f)
+ylrl = node(ylr)
+ylrl.setObject(obj_u)
+ylrr = node(ylr)
+ylrr.setObject(obj_u)
+yr = node(yroot)
+yr.setObject(obj_b)
+
+################################################################
+# Look for X sub-trees in Y 
+def test6():
+	tx = copy.deepcopy(xroot)
+	ty = copy.deepcopy(yroot)
+	r = findPatternWithParams(ty, tx)
+	printTree(r[0])
+	

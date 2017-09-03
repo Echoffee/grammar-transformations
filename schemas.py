@@ -281,6 +281,19 @@ class gramTree :
 		
 		return t
 		
+	def GT_FoldFirstFound(self):
+		for r in self.T:
+			for t in list(filter(lambda x : x != r, self.T)):
+				res = findPatternWithParams(t, r)
+				if res[0] != None:
+					nn = node(None)
+					nn.setObject(r.getObject())
+					replaceInTree2(res[0], nn)
+					for c in res[1]:
+						nn.addChild(c[1])
+						
+					return
+		
 	def GT_DeleteUnused(self):
 		# Delete all of the unused rules in the grammar
 		u = self.getUnusedRules()
