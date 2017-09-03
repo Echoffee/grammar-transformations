@@ -49,7 +49,21 @@ def gtest4():
 	g.randomizeRules(3)
 	g.generateTree()
 	printGramTree(g)
-	ng = g.gt_random_introduction()
+	ng = g.GT_IntroductionRandom()
 	printGramTree(ng)
 
-gtest4()
+######################################################
+# Generate random grammar + intro + suppr (intro'd)
+def gtest5():
+	g = gramTree([["h", 1], ["g", 2], ["f", 2]], [])
+	g.randomizeRules(3)
+	g.generateTree()
+	g = g.GT_IntroductionRandom()
+	printGramTree(g)
+	print("Unused rules :")
+	print(g.getUnusedRules())
+	g.GT_DeleteUnusedRandom()
+	print("...")
+	printGramTree(g)
+
+gtest5()
